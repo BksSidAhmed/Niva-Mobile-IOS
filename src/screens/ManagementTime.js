@@ -16,6 +16,7 @@ import { langueAction } from "../redux/actions/langueAction";
 import { Button, Overlay } from "react-native-elements";
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import { PermissionsAndroid } from "react-native";
+import { request, check, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { getDistance } from "geolib";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Collapse, CollapseHeader, CollapseBody } from "accordion-collapse-react-native";
@@ -583,7 +584,11 @@ class ManagementTime extends React.Component {
     };
 
     _requestLocationPermission = async () => {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+        const available = Platform.OS === "ios" ? await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE) : await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+        let granted = "";
+        if(available !== RESULTS.UNAVAILABLE && RESULTS.DENIED === "denied") {
+            granted = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        }
         return granted;
     };
 
@@ -629,6 +634,7 @@ class ManagementTime extends React.Component {
     _testPosition = async () => {
         return new Promise((resolve) => {
             Geolocation.getCurrentPosition((info) => {
+                console.log(info)             
                 let test_geolocalisation = false;
                 let code_lieu = null;
                 let latitude = info.coords.latitude.toString();
@@ -643,6 +649,13 @@ class ManagementTime extends React.Component {
                 });
 
                 resolve({ test_geolocalisation: test_geolocalisation, code_lieu: code_lieu, longitude: longitude, latitude: latitude });
+            },(error) => {
+                console.log(error);
+            },
+            { 
+                enableHighAccuracy: false, 
+                timeout: 20000, 
+                maximumAge: 1000 
             });
         });
     };
@@ -733,7 +746,7 @@ class ManagementTime extends React.Component {
                 } else {
                     if (localisation) {
                         const granted = await this._requestLocationPermission();
-                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                        if (granted === RESULTS.GRANTED) {
                             const test_geolocalisation = await this._testPosition();
                             if (test_geolocalisation.test_geolocalisation) {
                                 const action = await postAction(

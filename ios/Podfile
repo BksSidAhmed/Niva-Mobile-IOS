@@ -8,14 +8,10 @@ target 'Portail_Mobile' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-
-  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
-
-
-  pod 'RNSound', :path => '../node_modules/react-native-sound'
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  
+  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
 
   target 'Portail_MobileTests' do
     inherit! :complete

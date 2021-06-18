@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform  } from "react-native";
 import { connect } from "react-redux";
 
 class InitialComponent extends React.Component {
@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     circle: {
-        width: 50,
-        height: 50,
+        width: Platform.OS === 'ios' ? 40 : 50,
+        height: Platform.OS === 'ios' ? 40 : 50,
         borderRadius: 150 / 2,
         backgroundColor: "#376092",
         justifyContent: "center",

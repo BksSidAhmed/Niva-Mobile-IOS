@@ -96,7 +96,7 @@ class ManagementTime extends React.Component {
 
     componentWillUnmount = () => {
         clearInterval(this.IntervalClock);
-        LocationServicesDialogBox.stopListener();
+        //LocationServicesDialogBox.stopListener();
     };
 
     _getMouvementsEnAttente = () => {
@@ -1501,7 +1501,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     container_global_header: {
-        flex: 2,
+        flex: Platform.OS === 'ios' ? 1.5 : 2,
     },
     container_global_header_date: {
         flex: 2,
